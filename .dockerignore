@@ -1,0 +1,9 @@
+/.git
+/.res
+/docker
+/.editorconfig
+/.gitignore
+/.travis.yml
+/CHANGELOG.md
+/LICENSE
+/README.md
