@@ -7,7 +7,6 @@ docker container run ^
     --name cs16-server ^
     --restart on-failure ^
     --env-file ./cs16-server-launcher.env ^
-    -v d:\server/:/opt/steamcmd/games/cs16 ^
     -v d:\steam:/opt/steamcmd ^
     -p 27015:27015/udp ^
     cs ^

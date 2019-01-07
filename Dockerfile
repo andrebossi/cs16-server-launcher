@@ -1,6 +1,19 @@
 FROM debian:stretch-slim
 
-LABEL maintainer="dobolinux <andreluizbossi70@gmail.com>"
+ARG BUILD_DATE
+ARG VCS_REF
+ARG VERSION
+
+LABEL maintainer="dobolinux <andreluizbossi70@gmail.com>" \
+    org.label-schema.build-date=$BUILD_DATE \
+    org.label-schema.name="cs16-server-launcher" \
+    org.label-schema.description="CS 1.6 Server Launcher" \
+    org.label-schema.version=$VERSION \
+    org.label-schema.url="https://github.com/dobolinux/cs16-server-launcher" \
+    org.label-schema.vcs-ref=$VCS_REF \
+    org.label-schema.vcs-url="https://github.com/dobolinux/cs16-server-launcher" \
+    org.label-schema.vendor="dobolinux" \
+    org.label-schema.schema-version="1.1"
 
 RUN dpkg --add-architecture i386 && \
     apt-get update && \
@@ -54,7 +67,7 @@ USER steam
 
 EXPOSE 27015/udp 27015 27020/udp 26900/udp 27005 27005/udp 27030 27030/udp
 WORKDIR "${DIR_ROOT}"
-VOLUME [ "${DIR_ROOT}", "/home/steam/Steam" ]
+VOLUME [ "${DIR_ROOT}", "${DIR_STEAMCMD}" ]
 
 ENTRYPOINT [ "/entrypoint.sh" ]
 CMD [ "cs16-server-launcher", "start" ]
