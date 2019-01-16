@@ -1,3 +1,5 @@
+language: minimal
+
 sudo: required
 
 services:
@@ -11,40 +13,18 @@ env:
     - secure: "lmbO2BavoYZRxDxW9VsL5Kji1LE2xXTh/SUWBSBArxkuR2teW7es3RYp27jXhFsPNHqBx0b1BrLGSelDQDi+RsLlA+D3JKWeJ2zNayrqhAXAFIHBBNNJR1aKhQ2tSiXLMUMFeLq1muNnDp28bdFipxqPeR1G169jLgsX6bE8jKeQdPRyKQ1TMGHiZ6ZugaHYUKcIWwdfuZCnVojguo45qdlWES+UtEIJdShKEOzD7SmzdAC7C4ZWNpzWwamTJAQvjkQ746kqJIWktT/stYL99AWTWnbRw0gaxlh4rMNZxdI7qfRKcz/C2vLuiC+s+zHT09Ds/weVOpn1VWep9IZJk3VzoG1s1Y8hJ2pCWfoZTLir/QV/xCCR2/Zg4DR20+fJomQ7BDBmKLt6f5ytMJaIIlOWZUYk12cUKtCcZrpVZ0HJPCl2Tox2VGZ9cA+fLwea01sm0rUaTJyiqptZW/K8dbBR+LmLCRYiQj5fJBKOiiyeV51yTdwublmcr+gn57GTccc0Tu71aDELvNwmM+9Kr9LX8R/dk7uE9k3HQ6+zXcLE9ihFdxqeVy3WuRU1lzjeE9oJ4N7bA5gUqDgNdGePFqQEDMLsZv1Pu0qdH/U5cKNOM8W0VP82lUiillOXdrbOnPzPZq/61zU7KWr/8BowTY/MEiIgEN/N9bnouVGJpJ8=" #Docker email
     - secure: "eh22nrtfdLMjriwH7kYqjVhZQP7SUI8OKM+XYwdPzz4Cyg1NhBiXI+e+wgkGMT7mGWyDriGB9Uk7JmS+lxZkwFWZyl2coJNCv3o/Ui4eXK7OhJME8i+LVzXpvYttzAHDC797i5IO03CCYS2JCuHRizJW87mPp0Tf3uAJd1mEGVOKC44E4gRTeaFy7X8CfO3nPXWTHnnmQDtnsFDDfToMPFWzjz21PIUqDcrX7v3ZNZR654pOyXl7yLknxy5tMATKr+R9WSNRN/uhO5tW/dT257bIP6tx5K/nidqnPXwW7mj25Cw76B3YscpT9PFJ/GQBfJGfX9shZHrV55UBYKIumeOInPn2btmbgiVQi2VoJARniJtyOuIZRZjfBHToUlzteKDx8loBdPia9CWGiL0i8lJFXv1WURUIQoi4RGREI+xsRQkYTb/Tm6mZgxjR3zKw96ngnBuI6W4bZtLq9a+GkzHZqB0Ju3uq4+2TJJeImoJ5vgd1aBeJkQ4hKtYLwbWRCgoNT0aqA70EGi3ytNibc+d1J6RDFem7zbM8UTnUxvarJ4T07MYRs6R4pgGSFDs7kB4G6HtUHS2o3/S0dWKdMAaF6p5S/QFk5GIYVL6NBacASOMnDhHYLS6HL+bfjqCXWgNaiPxwzIuqJ5PW2QcszXcKTGEoMglvXEZ2rh7GcDs=" #Docker password
 
-before_install:
-  - sudo apt-get update
-  - docker --version
-  - export BRANCH=$(if [ "$TRAVIS_PULL_REQUEST" == "false" ]; then echo $TRAVIS_BRANCH; else echo $TRAVIS_PULL_REQUEST_BRANCH; fi)
-  - export DOCKER_TAG=$(if [ "$BRANCH" == "master" ]; then echo "latest"; else echo $BRANCH; fi)
-  - echo "TRAVIS_BRANCH=$TRAVIS_BRANCH, PR=$PR, BRANCH=$BRANCH, DOCKER_TAG=$DOCKER_TAG"
-
-install:
-  - |
-    docker build --build-arg BUILD_DATE=`date -u +"%Y-%m-%dT%H:%M:%SZ"` \
+script:
+  - docker build --build-arg BUILD_DATE=`date -u +"%Y-%m-%dT%H:%M:%SZ"` \
     --build-arg VCS_REF=${TRAVIS_COMMIT::8} \
     --build-arg VERSION=${VERSION} \
     -t cs16-server-launcher .
 
-before_script:
-  - |
-    docker run -it \
-    --name $DOCKER_REPONAME \
-    -v cs16:/opt/steamcmd/games/cs16 \
-    cs16-server-launcher
-  - sleep 10
-  - docker logs $DOCKER_REPONAME
-
-script:
-  - docker ps | grep $DOCKER_REPONAME
-  - timeout 20m docker logs -f $DOCKER_REPONAME | while read LOGLINE; do echo ${LOGLINE} ; if test "${LOGLINE#*Connection to Steam servers successful}" != "$LOGLINE"; then exit 0; fi; done
-
 after_success:
-  - |
-    test $TRAVIS_PULL_REQUEST = false && \
-    echo "$DOCKER_PASS" | docker login --username "$DOCKER_USERNAME" --password-stdin && \
-    docker tag cs16-server-launcher $DOCKER_USERNAME/$DOCKER_REPONAME:$DOCKER_TAG && \
-    docker tag cs16-server-launcher $DOCKER_USERNAME/$DOCKER_REPONAME:$VERSION && \
-    docker push $DOCKER_USERNAME/$DOCKER_REPONAME
+  - if [[ "$TRAVIS_BRANCH" == "master" ]]; then
+        echo "$DOCKER_PASS" | docker login --username "$DOCKER_USERNAME" --password-stdin;
+        docker tag cs16-server-launcher $DOCKER_USERNAME/$DOCKER_REPONAME:$DOCKER_TAG;
+        docker push $DOCKER_USERNAME/$DOCKER_REPONAME
+    fi
 
 branches:
   except:
@@ -54,5 +34,5 @@ notifications:
   email:
     recipients:
       - andreluizbossi70@gmail.com
-    on_success: never # default: change
-    on_failure: always # default: always
+    on_success: never
+    on_failure: always
