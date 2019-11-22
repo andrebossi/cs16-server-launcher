@@ -1,8 +1,8 @@
-![License MIT](https://img.shields.io/badge/license-MIT-blue.svg)
+# Counter-Strike 1.6 Server
+
+[![GitHub](https://img.shields.io/badge/license-MIT-blue.svg)](LICENSE)
 [![Docker Cloud Automated build](https://img.shields.io/docker/cloud/automated/dobolinux/cs16-server-launcher.svg)](https://hub.docker.com/r/dobolinux/cs16-server-launcher)
 [![Docker Cloud Build Status](https://img.shields.io/docker/cloud/build/dobolinux/cs16-server-launcher.svg)](https://hub.docker.com/r/dobolinux/cs16-server-launcher/builds)
-
-# Counter-Strike 1.6 Server
 
 A Docker container for Counter-Strike 1.6 Server
 
