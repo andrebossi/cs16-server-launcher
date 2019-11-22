@@ -34,5 +34,5 @@ docker build -t cs16-server-launcher .
 
 ## Documentation
 
-* [Installation](../../wiki/Installation)
-* [Configuration](../../wiki/Configuration)
+* [Installation](https://github.com/dobolinux/cs16-server-launcher/wiki/Installation)
+* [Configuration](https://github.com/dobolinux/cs16-server-launcher/wiki/Configuration)
