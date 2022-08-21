@@ -7,7 +7,7 @@
 # 1. Counter-Strike 1.6 Server
 
 [![GitHub](https://img.shields.io/badge/license-MIT-blue.svg)](LICENSE)
-[![Docker Build Status]()](https://github.com/andrebossi/cs16-server-launcher/actions/workflows/docker-publish.yml)
+[![GitHub Workflow Status](https://github.com/andrebossi/cs16-server-launcher/actions/workflows/docker-publish.yml/badge.svg)](https://github.com/andrebossi/cs16-server-launcher/actions/workflows/docker-publish.yml)
 
 A Docker container for Counter-Strike 1.6 Server
 
