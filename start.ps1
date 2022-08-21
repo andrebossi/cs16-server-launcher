@@ -1,5 +1,3 @@
-@echo off
-
 netsh interface portproxy add v4tov4 listenport=27015 listenaddress=192.168.0.180 connectport=27015 connectaddress=10.0.75.1
 
 docker container run ^

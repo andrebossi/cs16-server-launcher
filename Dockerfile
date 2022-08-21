@@ -1,18 +1,17 @@
-FROM debian:stretch-slim
+FROM debian:11-slim
 
 ARG BUILD_DATE
 ARG VCS_REF
 ARG VERSION
 
-LABEL maintainer="dobolinux <andreluizbossi70@gmail.com>" \
-    org.label-schema.build-date=$BUILD_DATE \
+LABEL org.label-schema.build-date=$BUILD_DATE \
     org.label-schema.name="cs16-server-launcher" \
     org.label-schema.description="CS 1.6 Server Launcher" \
     org.label-schema.version=$VERSION \
-    org.label-schema.url="https://github.com/dobolinux/cs16-server-launcher" \
+    org.label-schema.url="https://github.com/andrebossi/cs16-server-launcher" \
     org.label-schema.vcs-ref=$VCS_REF \
-    org.label-schema.vcs-url="https://github.com/dobolinux/cs16-server-launcher" \
-    org.label-schema.vendor="dobolinux" \
+    org.label-schema.vcs-url="https://github.com/andrebossi/cs16-server-launcher" \
+    org.label-schema.vendor="andrebossi" \
     org.label-schema.schema-version="1.1"
 
 RUN dpkg --add-architecture i386 && \
@@ -25,8 +24,8 @@ RUN dpkg --add-architecture i386 && \
     gdb \
     libc6-i386 \
     lib32stdc++6 \
-    lib32gcc1 \
-    lib32ncurses5 \
+    libgcc1 \
+    libncurses5 \
     lib32z1 \
     locales \
     net-tools \
@@ -42,6 +41,10 @@ RUN dpkg --add-architecture i386 && \
     rm -rf /var/lib/apt/lists/* /tmp/* /var/tmp/* && \
     find /var/log -type f | while read f; do echo -ne '' > $f; done;
 
+COPY cs16-server-launcher.sh /usr/bin/cs16-server-launcher
+COPY cs16-server-launcher.conf /etc/cs16-server-launcher/cs16-server-launcher.conf
+COPY entrypoint.sh /entrypoint.sh
+
 ENV LANG="pt_BR.UTF-8" \
     CS16_DOCKER="1" \
     DIR_STEAMCMD="/opt/steamcmd" \
@@ -54,14 +57,9 @@ RUN groupadd -f -g 1000 steam && \
     curl http://media.steampowered.com/client/steamcmd_linux.tar.gz | tar -xvz -C ${DIR_STEAMCMD} && \
     chown -R steam. ${DIR_STEAMCMD} && \
     mkdir -p /home/steam/.steam/sdk32/ && \
-    ln -s ${DIR_ROOT}/libsteam.so /home/steam/.steam/sdk32/libsteam.so
-
-COPY cs16-server-launcher.sh /usr/bin/cs16-server-launcher
-COPY cs16-server-launcher.conf /etc/cs16-server-launcher/cs16-server-launcher.conf
-COPY entrypoint.sh /entrypoint.sh
-
-RUN chmod a+x /entrypoint.sh /usr/bin/cs16-server-launcher && \
-    chown -R steam. /etc/cs16-server-launcher
+    ln -s ${DIR_ROOT}/libsteam.so /home/steam/.steam/sdk32/libsteam.so \
+    && chmod a+x /entrypoint.sh /usr/bin/cs16-server-launcher \
+    && chown -R steam. /etc/cs16-server-launcher
 
 USER steam
 
