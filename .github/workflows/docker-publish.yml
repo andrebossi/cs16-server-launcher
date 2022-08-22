@@ -72,3 +72,12 @@ jobs:
             BUILD_DATE=${{env.RELEASE_DATE }}
             BUILD_VERSION=${{ env.IMAGE_VERSION }}
             VCS_REF=${{ env.IMAGE_VERSION }}
+
+      - name: Docker Hub Description
+        uses: peter-evans/dockerhub-description@v3
+        with:
+          username: ${{ secrets.DOCKER_USERNAME }}
+          password: ${{ secrets.DOCKER_PASSWORD }}
+          repository: ${{ env.IMAGE_NAME }}
+          readme-filepath: ./README.md
+          short-description: "Counter-Strike 1.6 Server containerized"
