@@ -20,6 +20,16 @@ These instructions will cover usage information and for the Docker container.
 In order to run this container you'll need [Docker](https://docs.docker.com/get-started/) installed.
 
 ### 1.1.2. Installing
+```sh
+docker container run \
+    -it \
+    --name cs16-server \
+    --env-file ./cs16-server-launcher.env \
+    -v /tmp/steamcmd:/opt/steamcmd \
+    -p 27015:27015/udp \
+    dobolinux/cs16-server-launcher:latest \\
+    cs16-server-launcher start
+```
 
 Pull the image from the Docker repository:
 
