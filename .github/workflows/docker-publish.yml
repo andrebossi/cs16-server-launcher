@@ -45,6 +45,11 @@ jobs:
           username: ${{ secrets.DOCKER_USERNAME }}
           password: ${{ secrets.DOCKER_PASSWORD }}
 
+      - name: set vars
+        run: |
+          echo "RELEASE_DATE=$(date --rfc-3339=date)" >> ${GITHUB_ENV}
+          echo "IMAGE_VERSION={ startsWith(github.ref, 'refs/tags/') && steps.bump-semver.outputs.new_version || github.event.inputs.image_version }" >> ${GITHUB_ENV}
+
       -
         name: Docker meta
         id: meta
@@ -55,11 +60,6 @@ jobs:
           tags: |
             latest
             ${{ env.IMAGE_VERSION }}
-
-      - name: set release date
-        run: |
-          echo "RELEASE_DATE=$(date --rfc-3339=date)" >> ${GITHUB_ENV}
-          echo "IMAGE_VERSION={ startsWith(github.ref, 'refs/tags/') && steps.bump-semver.outputs.new_version || github.event.inputs.image_version }" >> ${GITHUB_ENV}
 
       - name: Build and push Docker image
         id: build-and-push
